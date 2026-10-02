@@ -1,0 +1,58 @@
+import type { Device } from "../types/device";
+
+export const initialDevices: Device[] = [
+  {
+    id: "AS-0001",
+    name: "1st Floor Room 101",
+    location: "Academic Building",
+    online: true,
+    co2: 680,
+    pm25: 8,
+    pm10: 16,
+    temperature: 24.5,
+    humidity: 52,
+    airQuality: "Good",
+    lastUpdated: "Just now",
+  },
+  {
+    id: "AS-0002",
+    name: "1st Floor Room 102",
+    location: "Academic Building",
+    online: true,
+    co2: 820,
+    pm25: 13,
+    pm10: 22,
+    temperature: 25.1,
+    humidity: 55,
+    airQuality: "Good",
+    lastUpdated: "1 min ago",
+  },
+  {
+    id: "AS-0003",
+    name: "2nd Floor Laboratory",
+    location: "Science Building",
+    online: true,
+    co2: 1240,
+    pm25: 26,
+    pm10: 41,
+    temperature: 27.1,
+    humidity: 68,
+    airQuality: "Moderate",
+    lastUpdated: "2 mins ago",
+  },
+  {
+    id: "AS-0004",
+    name: "Faculty Room",
+    location: "Administration Building",
+    online: false,
+    co2: 980,
+    pm25: 18,
+    pm10: 30,
+    temperature: 26.2,
+    humidity: 60,
+    airQuality: "Moderate",
+    lastUpdated: "18 mins ago",
+  },
+];
+
+export const chartValues = [42, 49, 47, 53, 57, 51, 62, 58, 67, 65, 72, 69];
