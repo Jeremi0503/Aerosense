@@ -2,6 +2,7 @@ import StatCard from "../components/StatCard";
 import { chartValues } from "../data/devices";
 import type { Device } from "../types/device";
 import { getAirQualityClass, getStatusDot } from "../utils/devicePresentation";
+import { getHumidityStatus, hasHighHumidityAlert } from "../utils/humidityControl";
 
 type DashboardPageProps = {
   filteredDevices: Device[];
@@ -14,6 +15,8 @@ type DashboardPageProps = {
   onSearchChange: (search: string) => void;
   onSelectDevice: (deviceId: string) => void;
   onRenameDevice: () => void;
+  onConfigureHumidity: () => void;
+  settingsMessage: string;
 };
 
 export default function DashboardPage({
@@ -27,6 +30,8 @@ export default function DashboardPage({
   onSearchChange,
   onSelectDevice,
   onRenameDevice,
+  onConfigureHumidity,
+  settingsMessage,
 }: DashboardPageProps) {
   const secondaryText = darkMode ? "text-slate-400" : "text-slate-500";
   const cardBackground = darkMode
@@ -35,16 +40,16 @@ export default function DashboardPage({
 
   return (
     <>
-      <section className="mb-8">
+      <section className="mb-6 sm:mb-8">
         <div className="mb-2 flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <span className={`h-2.5 w-2.5 rounded-full ${warningDevices > 0 ? "bg-amber-500" : "bg-emerald-500"}`} />
           <p className={`text-sm font-medium ${secondaryText}`}>
-            System is running normally
+            {warningDevices > 0 ? `${warningDevices} device${warningDevices === 1 ? "" : "s"} need attention` : "System is running normally"}
           </p>
         </div>
 
         <h3
-          className={`text-3xl font-bold tracking-tight ${
+          className={`text-2xl font-bold tracking-tight sm:text-3xl ${
             darkMode ? "text-white" : "text-slate-900"
           }`}
         >
@@ -55,7 +60,7 @@ export default function DashboardPage({
         </p>
       </section>
 
-      <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4 xl:grid-cols-4">
         <StatCard
           title="Total Devices"
           value={String(totalDevices)}
@@ -90,8 +95,8 @@ export default function DashboardPage({
         />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className={`rounded-2xl border p-5 shadow-sm ${cardBackground}`}>
+      <section className="grid min-w-0 gap-4 sm:gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className={`min-w-0 rounded-2xl border p-4 shadow-sm sm:p-5 ${cardBackground}`}>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h4 className={`text-lg font-bold ${darkMode ? "text-white" : "text-slate-900"}`}>
@@ -115,7 +120,7 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3 sm:mt-5">
             {filteredDevices.map((device) => {
               const active = selectedDevice.id === device.id;
 
@@ -134,7 +139,7 @@ export default function DashboardPage({
                       : "border-slate-200 hover:bg-slate-50"
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center justify-between gap-2 sm:gap-4">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className={`h-2.5 w-2.5 rounded-full ${getStatusDot(device.online)}`} />
@@ -142,13 +147,13 @@ export default function DashboardPage({
                           {device.name}
                         </p>
                       </div>
-                      <p className={`mt-1 text-xs ${secondaryText}`}>
-                        {device.id} • {device.location}
+                      <p className={`mt-1 break-words text-xs ${secondaryText}`}>
+                        {device.id} · {device.location}
                       </p>
                     </div>
 
                     <span
-                      className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium ${getAirQualityClass(
+                      className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-medium sm:px-3 sm:text-xs ${getAirQualityClass(
                         device.airQuality,
                         darkMode
                       )}`}
@@ -168,8 +173,8 @@ export default function DashboardPage({
           </div>
         </div>
 
-        <div className={`rounded-2xl border p-5 shadow-sm ${cardBackground}`}>
-          <div className="flex items-start justify-between gap-4">
+        <div className={`min-w-0 rounded-2xl border p-4 shadow-sm sm:p-5 ${cardBackground}`}>
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
             <div>
               <div className="flex items-center gap-2">
                 <span className={`h-2.5 w-2.5 rounded-full ${getStatusDot(selectedDevice.online)}`} />
@@ -177,16 +182,17 @@ export default function DashboardPage({
                   {selectedDevice.online ? "Online" : "Offline"}
                 </span>
               </div>
-              <h4 className={`mt-2 text-xl font-bold ${darkMode ? "text-white" : "text-slate-900"}`}>
+              <h4 className={`mt-2 break-words text-lg font-bold sm:text-xl ${darkMode ? "text-white" : "text-slate-900"}`}>
                 {selectedDevice.name}
               </h4>
               <p className={`mt-1 text-sm ${secondaryText}`}>{selectedDevice.id}</p>
+              <p className={`mt-1 text-sm ${secondaryText}`}>{selectedDevice.location}</p>
             </div>
 
             <button
               type="button"
               onClick={onRenameDevice}
-              className={`rounded-xl border px-3 py-2 text-xs font-medium transition ${
+              className={`min-h-11 shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${
                 darkMode
                   ? "border-slate-700 text-slate-300 hover:bg-slate-800"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -196,7 +202,7 @@ export default function DashboardPage({
             </button>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:mt-5 sm:gap-4">
             <StatCard
               title="CO₂"
               value={selectedDevice.co2 === null ? "--" : String(selectedDevice.co2)}
@@ -231,8 +237,8 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className={`mt-4 rounded-xl border p-4 ${darkMode ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-slate-50"}`}>
-            <div className="flex items-center justify-between">
+          <div className={`mt-4 rounded-xl border p-3 sm:p-4 ${darkMode ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-slate-50"}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className={`text-xs font-medium uppercase tracking-wide ${secondaryText}`}>
                   Air Quality
@@ -251,20 +257,98 @@ export default function DashboardPage({
               </span>
             </div>
           </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <StatCard
+              title="PM10"
+              value={selectedDevice.pm10 === null ? "--" : String(selectedDevice.pm10)}
+              unit={selectedDevice.pm10 === null ? "" : "µg/m³"}
+              icon="PM"
+              accent={darkMode ? "bg-amber-500/15 text-amber-300" : "bg-amber-50 text-amber-600"}
+              darkMode={darkMode}
+            />
+            <div className={`rounded-xl border p-4 ${darkMode ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-slate-50"}`}>
+              <p className={`text-xs font-medium uppercase tracking-wide ${secondaryText}`}>
+                Humidity status
+              </p>
+              <p className={`mt-2 font-bold ${
+                hasHighHumidityAlert(selectedDevice)
+                  ? "text-amber-500"
+                  : darkMode
+                  ? "text-white"
+                  : "text-slate-900"
+              }`}>
+                {getHumidityStatus(selectedDevice)}
+              </p>
+            </div>
+          </div>
+
+          <div className={`mt-4 rounded-xl border p-3 sm:p-4 ${darkMode ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-slate-50"}`}>
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+              <div>
+                <p className={`text-xs font-medium uppercase tracking-wide ${secondaryText}`}>
+                  Humidity control
+                </p>
+                <p className={`mt-2 break-words font-semibold ${darkMode ? "text-white" : "text-slate-900"}`}>
+                  Appliance: {selectedDevice.humidityControl.applianceType}
+                </p>
+                <p className={`mt-1 break-words text-sm ${secondaryText}`}>
+                  Appliance state: Unknown — no device feedback available
+                </p>
+                <p className={`mt-1 break-words text-sm ${secondaryText}`}>
+                  Automatic control: {selectedDevice.humidityControl.automaticEnabled ? "Enabled in settings only" : "Disabled"}
+                </p>
+                {selectedDevice.humidityControl.applianceType !== "none" && (
+                  <>
+                    <p className={`mt-1 text-sm ${secondaryText}`}>
+                      {selectedDevice.humidityControl.applianceType === "humidifier"
+                        ? `Starts below ${selectedDevice.humidityControl.activationHumidity}% RH; stops at ${selectedDevice.humidityControl.shutdownHumidity}% RH; safety limit ${selectedDevice.humidityControl.highHumidityLimit}% RH`
+                        : `Starts above ${selectedDevice.humidityControl.activationHumidity}% RH; stops at ${selectedDevice.humidityControl.shutdownHumidity}% RH`}
+                    </p>
+                    <p className={`mt-1 text-sm ${secondaryText}`}>
+                      {selectedDevice.humidityControl.confirmationPeriodSeconds}s confirmation · {selectedDevice.humidityControl.requiredConsecutiveReadings} valid readings · {selectedDevice.humidityControl.minimumOffTimeMinutes} min minimum off · {selectedDevice.humidityControl.maximumRuntimeMinutes} min maximum runtime
+                    </p>
+                  </>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={onConfigureHumidity}
+                className={`min-h-11 shrink-0 rounded-xl border px-3 py-2 text-xs font-medium transition ${
+                  darkMode
+                    ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                    : "border-slate-200 text-slate-600 hover:bg-white"
+                }`}
+              >
+                Configure
+              </button>
+            </div>
+            {hasHighHumidityAlert(selectedDevice) && (
+              <p role="alert" className="mt-3 rounded-lg bg-amber-500/10 p-3 text-sm text-amber-600">
+                High humidity safety limit reached. Device-side shutdown is not connected in this prototype.
+              </p>
+            )}
+            {settingsMessage && (
+              <p role="status" className="mt-3 text-sm text-emerald-600">
+                {settingsMessage}
+              </p>
+            )}
+          </div>
+
           <p className={`mt-4 text-xs ${secondaryText}`}>
             Last updated: {selectedDevice.lastUpdated}
           </p>
         </div>
       </section>
 
-      <section className={`mt-6 rounded-2xl border p-5 shadow-sm ${cardBackground}`}>
+      <section className={`mt-5 min-w-0 rounded-2xl border p-4 shadow-sm sm:mt-6 sm:p-5 ${cardBackground}`}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h4 className={`text-lg font-bold ${darkMode ? "text-white" : "text-slate-900"}`}>
               CO₂ Trend
             </h4>
             <p className={`text-sm ${secondaryText}`}>
-              Recent readings from {selectedDevice.name}
+              Placeholder values only; historical sensor readings are not connected.
             </p>
           </div>
           <span className={`text-xs font-medium ${secondaryText}`}>
@@ -272,8 +356,8 @@ export default function DashboardPage({
           </span>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl">
-          <div className="relative h-64">
+        <div className="mt-5 overflow-x-auto rounded-xl sm:mt-6">
+          <div className="relative h-56 min-w-[32rem] sm:h-64 sm:min-w-0">
             <div className="absolute inset-0 flex flex-col justify-between">
               {[0, 1, 2, 3, 4].map((line) => (
                 <div

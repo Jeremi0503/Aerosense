@@ -56,6 +56,17 @@ export default function useBluetoothDevices({
         humidity: null,
         airQuality: "Unknown",
         lastUpdated: "Connected via Bluetooth",
+        humidityControl: {
+          applianceType: "none",
+          automaticEnabled: false,
+          activationHumidity: 40,
+          shutdownHumidity: 45,
+          highHumidityLimit: null,
+          confirmationPeriodSeconds: 300,
+          requiredConsecutiveReadings: 3,
+          minimumOffTimeMinutes: 10,
+          maximumRuntimeMinutes: 120,
+        },
       });
 
       if (!bluetoothListeners.current.has(bluetoothDevice)) {

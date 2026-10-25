@@ -1,0 +1,17 @@
+# AeroSense frontend setup
+# This file documents npm setup; it is not a pip requirements file.
+# The dependency versions are maintained in aerosense-frontend/package.json
+# and aerosense-frontend/package-lock.json.
+
+Prerequisites:
+- Node.js (LTS recommended; npm is included)
+
+Install dependencies from the repository root:
+  cd aerosense-frontend
+  npm ci
+
+Start the development server:
+  npm run dev
+
+Create a production build:
+  npm run build

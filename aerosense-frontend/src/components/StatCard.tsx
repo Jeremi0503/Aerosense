@@ -17,25 +17,25 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`rounded-2xl border p-5 shadow-sm ${
+      className={`min-w-0 rounded-2xl border p-3 shadow-sm sm:p-5 ${
         darkMode
           ? "border-slate-800 bg-slate-900"
           : "border-slate-200 bg-white"
       }`}
     >
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex min-w-0 items-center justify-between gap-2">
+        <div className="min-w-0">
           <p
-            className={`text-sm ${
+            className={`truncate text-xs sm:text-sm ${
               darkMode ? "text-slate-400" : "text-slate-500"
             }`}
           >
             {title}
           </p>
 
-          <div className="mt-2 flex items-end gap-1">
+          <div className="mt-1 flex flex-wrap items-end gap-x-1 sm:mt-2">
             <span
-              className={`text-3xl font-bold ${
+              className={`text-2xl font-bold sm:text-3xl ${
                 darkMode ? "text-white" : "text-slate-900"
               }`}
             >
@@ -43,7 +43,7 @@ export default function StatCard({
             </span>
 
             <span
-              className={`mb-1 text-sm ${
+              className={`mb-0.5 text-xs sm:mb-1 sm:text-sm ${
                 darkMode ? "text-slate-400" : "text-slate-500"
               }`}
             >
@@ -53,7 +53,7 @@ export default function StatCard({
         </div>
 
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg ${accent}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base sm:h-11 sm:w-11 sm:text-lg ${accent}`}
         >
           {icon}
         </div>

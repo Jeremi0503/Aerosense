@@ -20,9 +20,12 @@ export default function RenameDeviceModal({
   const secondaryText = darkMode ? "text-slate-400" : "text-slate-500";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-3 sm:items-center sm:p-4">
       <div
-        className={`w-full max-w-md rounded-2xl border p-6 shadow-2xl ${
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rename-device-title"
+        className={`my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto rounded-2xl border p-5 shadow-2xl sm:p-6 ${
           darkMode
             ? "border-slate-800 bg-slate-900"
             : "border-slate-200 bg-white"
@@ -34,6 +37,7 @@ export default function RenameDeviceModal({
               className={`text-xl font-bold ${
                 darkMode ? "text-white" : "text-slate-900"
               }`}
+              id="rename-device-title"
             >
               Rename device
             </h3>
@@ -47,7 +51,7 @@ export default function RenameDeviceModal({
             type="button"
             onClick={onClose}
             aria-label="Close rename dialog"
-            className={`text-xl ${secondaryText}`}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center text-xl ${secondaryText}`}
           >
             ×
           </button>
@@ -72,7 +76,7 @@ export default function RenameDeviceModal({
               onSave();
             }
           }}
-          className={`mt-2 w-full rounded-xl border px-4 py-3 outline-none ${
+          className={`mt-2 min-h-11 w-full rounded-xl border px-4 py-3 text-base outline-none sm:text-sm ${
             darkMode
               ? "border-slate-700 bg-slate-950 text-white focus:border-emerald-500"
               : "border-slate-200 bg-slate-50 text-slate-900 focus:border-emerald-500"
@@ -80,11 +84,11 @@ export default function RenameDeviceModal({
           placeholder="Example: 3rd Floor Room 305"
         />
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
           <button
             type="button"
             onClick={onClose}
-            className={`rounded-xl border px-4 py-2.5 text-sm font-medium ${
+            className={`min-h-11 rounded-xl border px-4 py-2.5 text-sm font-medium ${
               darkMode
                 ? "border-slate-700 text-slate-300 hover:bg-slate-800"
                 : "border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -96,7 +100,7 @@ export default function RenameDeviceModal({
           <button
             type="button"
             onClick={onSave}
-            className="rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
+            className="min-h-11 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
           >
             Save name
           </button>
