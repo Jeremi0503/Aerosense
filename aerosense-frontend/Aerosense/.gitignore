@@ -28,3 +28,14 @@ dist/
 .env
 .env.local
 .env.*.local
+# Node.js dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Environment variables
+.env
+**/.env
